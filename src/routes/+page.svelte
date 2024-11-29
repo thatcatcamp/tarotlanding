@@ -80,7 +80,6 @@
     <div class="hero-section flex">
         <div class="image-slider w-2/5">
             <div class="container my-5 justify-center items-center" style="margin-left: 10%;">
-                <h3 class="text-center"></h3>
                 <div class="row justify-content-center" style="max-height: 25%">
                     <div class="col-md-6">
                         <div class="card">
@@ -154,9 +153,6 @@
         <header class="absolute inset-x-0 top-0 z-50">
             <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div class="flex lg:flex-1">
-                    <a href="#" class="-m-1.5 p-1.5">
-                        <span class="sr-only">Your Company</span>
-                    </a>
                 </div>
                 <div class="flex lg:hidden">
                 </div>
@@ -174,11 +170,6 @@
                 <div
                     class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
                     <div class="flex items-center justify-between">
-                        <a href="#" class="-m-1.5 p-1.5">
-                            <span class="sr-only">Your Company</span>
-                            <img class="h-8 w-auto"
-                                 src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600" alt="">
-                        </a>
                         <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
                             <span class="sr-only">Close menu</span>
                             <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -188,23 +179,6 @@
                         </button>
                     </div>
                     <div class="mt-6 flow-root">
-                        <div class="-my-6 divide-y divide-gray-500/10">
-                            <div class="space-y-2 py-6">
-                                <a href="#"
-                                   class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Product</a>
-                                <a href="#"
-                                   class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Features</a>
-                                <a href="#"
-                                   class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Marketplace</a>
-                                <a href="#"
-                                   class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Company</a>
-                            </div>
-                            <div class="py-6">
-                                <a href="#"
-                                   class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log
-                                    in</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -217,27 +191,7 @@
 </main>
 
 <style>
-    /* your styles here. At minimum add basic layout and style for
-       h1, main, key-points, call-to-action, button, #lightgallery img */
-    .carousel-container {
-        background: #333333;
-        display: flex;
-        justify-content: center; /* Horizontally center */
-        align-items: center; /* Vertically center */
-        max-height: 100%; /* Limit height to 25% of viewport height */
-        width: 100%; /* Ensure it takes full width */
-        overflow: hidden; /* Hide any content that overflows */
-    }
 
-    /* Style the carousel and its images as needed */
-    .carousel-container :global(.carousel) { /*Using global to style external component */
-        width: 100%; /* Adjust as needed */
-    }
-
-    .carousel-container :global(.carousel img) {
-        max-height: 100%; /* Images scale to fit container */
-        /* Add other image styles like object-fit: cover; if necessary */
-    }
 
     nav {
         background-color: #f0f0f0; /* Example background color */
@@ -277,15 +231,8 @@
         box-sizing: border-box
     }
 
-    /* Slideshow container */
-    .slideshow-container {
-        max-width: 1000px;
-        position: relative;
-        margin: auto;
-    }
 
-
-    .active, .dot:hover {
+    .active{
         background-color: #717171;
     }
 

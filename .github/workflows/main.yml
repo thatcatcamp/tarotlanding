@@ -37,3 +37,28 @@ jobs:
         name: playa-tarot-build
         path: build
 
+    # Create a release and upload the build as a snapshot
+    - name: Create Release
+      id: create_release  # Set an ID to access output later
+      uses: actions/create-release@v1  # Updated action for creating releases
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for creating releases
+      with:
+        tag_name: snapshot-${{ github.sha }}  # Tag with commit SHA
+        release_name: Snapshot ${{ github.sha }}  # Release title
+        draft: false        # Set to true if you want a draft release
+        prerelease: true   # Mark as a prerelease (optional)
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1   # Updated action for uploading assets
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # Use the output from create_release
+        asset_path: ./build.zip         # Create a zip archive of your build directory
+        asset_name: playa-tarot-snapshot-${{ github.sha }}.zip   # Descriptive name for the asset
+        asset_content_type: application/zip  # Correct content type
+
+
+    - name: Zip Build Directory
+      run: zip -r ./build.zip ./build    # Create zip file in root of the repository.

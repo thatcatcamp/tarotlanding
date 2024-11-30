@@ -1,12 +1,12 @@
 <script>
-
-    // image imports if you are not doing dynamic loading
-
     import {onMount} from "svelte";
+    import {fade} from 'svelte/transition';
+    import {crossfade} from 'svelte/transition';
+    import {quintOut} from 'svelte/easing';
 
-    let activeLink = ""; // keep track of current active link for styling
+    let activeLink = "";
     const handleLinkClick = (link) => {
-        activeLink = link; // Update the active link on click.
+        activeLink = link;
     };
 
     let callToAction = [
@@ -37,238 +37,234 @@
             text: "We have numerous tablets, with either Android or Ubuntu installed"
         },
         {
+            src: 'V-Art.png',
+            alt: 'Tablets!',
+            text: "We have numerous tablets, with either Android or Ubuntu installed"
+        },
+        {
+            src: 'c.png',
+            alt: 'Tablets!',
+            text: "We have numerous tablets, with either Android or Ubuntu installed"
+        },
+        {
             src: 'II-Dust.png',
             alt: 'Tablets!',
             text: "We have numerous tablets, with either Android or Ubuntu installed"
         },
-
-        {src: '/X-Art.png', alt: 'LED Panels', text: "Controllers, cables, panels, we got them all."},
-
+        {
+            src: '/X-Art.png',
+            alt: 'LED Panels',
+            text: "Controllers, cables, panels, we got them all."
+        }
     ];
 
     let currentImageIndex = 0;
-
+    // Create crossfade transition
+    const [send, receive] = crossfade({
+        duration: 600,
+        easing: quintOut
+    });
     onMount(() => {
-        console.log("woo");
         const interval = setInterval(() => {
             currentImageIndex = (currentImageIndex + 1) % images.length;
             currentCallToAction = (currentCallToAction + 1) % callToAction.length;
         }, 3000);
-    })
 
+        // Cleanup interval on component destruction
+        return () => clearInterval(interval);
+    });
 </script>
 
 <svelte:head>
     <title>Playa Tarot</title>
 </svelte:head>
+
 <nav>
     <ul>
         <li class:active={activeLink === "project"}>
-            <a href="/project" on:click={() => handleLinkClick("project")}>Project</a>
+            <a href="/create" on:click={() => handleLinkClick("create")}>Create</a>
         </li>
         <li class:active={activeLink === "fundraiser"}>
-            <a href="/fundraiser" on:click={() => handleLinkClick("fundraiser")}>Fundraiser</a>
+            <a href="/donate" on:click={() => handleLinkClick("donate")}>Donate</a>
         </li>
+        <li class:active={activeLink === "participate"}>
+            <a href="/participate" on:click={() => handleLinkClick("participate")}>Participate</a>
+        </li>
+
         <li class:active={activeLink === "about"}>
-            <a href="/about" on:click={() => handleLinkClick("about")}>About Us</a>
+            <a href="https://thatcatcamp.com" on:click={() => handleLinkClick("about")}>About Us</a>
         </li>
     </ul>
 </nav>
 
 <main>
-
-    <div class="hero-section flex">
-        <div class="image-slider w-2/5">
-            <div class="container my-5 justify-center items-center" style="margin-left: 10%;">
-                <div class="row justify-content-center" style="max-height: 25%">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="image-container">
-                                <img style="" src={images[currentImageIndex].src} alt={images[currentImageIndex].alt}
-                                     class="card-img-top animated-image">
-                            </div>
-                        </div>
+    <div class="hero-section flex flex-col md:flex-row">
+        <div class="image-slider w-full md:w-2/5 px-4 md:px-0">
+            <div class="container mx-auto my-5">
+                <div class="flex justify-center items-center">
+                    <div class="image-container">
+                        {#key currentImageIndex}
+                            <img
+                                in:receive="{{ key: currentImageIndex }}"
+                                out:send="{{ key: currentImageIndex }}"
+                                src={images[currentImageIndex].src}
+                                alt={images[currentImageIndex].alt}
+                                class="absolute inset-0 w-full h-full object-contain"
+                            />
+                        {/key}
                     </div>
+
                 </div>
             </div>
         </div>
-        <div class="hero-text w-3/5">
-            <div class="relative isolate px-6 pt-14 lg:px-8">
-                <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-                     aria-hidden="true">
-                    <div
-                        class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-                        style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-                </div>
-                <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-                    <div class="text-center">
-                        <h1 class="text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">Playa
-                            Tarot</h1>
-                        <p class="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">An open art/gifting
-                            project for Burning Man 2025</p>
 
-                        <div class="hero-text w-3/5 flex">
-                            <div class="w-1/3 flex flex-col justify-center items-center p-4">
-                                <a
-                                    href="/"
-                                    class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
-                                >
-                                    {callToAction[currentCallToAction].action}
-                                </a>
-                            </div>
+        <div class="hero-text w-full md:w-3/5 px-4">
+            <div class="text-center md:text-left">
+                <h1 class="text-4xl md:text-5xl lg:text-7xl font-semibold tracking-tight text-gray-900 mb-4">
+                    Playa Tarot
+                </h1>
 
-                            <div class="w-2/3 p-4 transition-opacity duration-500"
-                                 class:fade-in={currentCallToAction !== undefined}>
-                                <p class="text-lg text-gray-700">
-                                    {currentCallToAction !== undefined && callToAction[currentCallToAction].cot}
+                <p class="text-lg font-medium text-gray-500 mb-6">
+                    An open art/gifting project for Burning Man 2025
+                </p>
 
-                            </div>
-                        </div>
-                            <p>
-        Playa Tarot is a unique set of 72 tarot cards with images and themes
-        from the event - currently done by @Reptar but you can make them your own.  Individual cards can be adopted with original artwork or you can help us
-                                print them by a donation.
-                                <p>
-                        <b></b>
-                        <i>All artwork is CC-BY-NC-SA-4.0 - use all you like, tattoo it on your butt if you want.  But for-profit use is forbidden.
-                        </i></p>
-
-
-
-                    </div>
-                </div>
                 <div
-                    class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
-                    aria-hidden="true">
-                    <div
-                        class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-                        style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+                    class="flex flex-col md:flex-row items-center justify-center md:justify-start space-y-4 md:space-y-0 md:space-x-6">
+                    <a
+                        href="/"
+                        class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
+                    >
+                        {callToAction[currentCallToAction].action}
+                    </a>
+
+                    <p class="text-lg text-gray-700 text-center md:text-left">
+                        {callToAction[currentCallToAction].cot}
+                    </p>
+                </div>
+
+                <div class="mt-6 text-center md:text-left">
+                    <p class="mb-4">
+                        Playa Tarot is a unique set of 72 tarot cards with images and themes from the event - currently
+                        done by @Reptar but you can make them your own. Individual cards can be adopted with original
+                        artwork or you can help us print them by a donation.
+                    </p>
+                    <table class="w-full border-collapse">
+                        <thead class="bg-gray-100">
+                        <tr>
+                            <th class="border p-2">Playa Suite</th>
+                            <th class="border p-2">Theme/Style</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="hover:bg-gray-50">
+                            <td class="border p-2">Shots</td>
+                            <td class="border p-2">Cups, emotion, relationships.  Color theme is purple, romantic/heroic artwork.</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="border p-2">Art</td>
+                            <td class="border p-2">Wands - fire, action, creativity.  Dreamy, Art Nouveau style - yellow/dust color theme.</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="border p-2">Rebar</td>
+                            <td class="border p-2">Swords, communication, big sad. Theme is 1980-2000's book/magazine illustration.</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="border p-2">Dust</td>
+                            <td class="border p-2">Pentacles, earth, daily world.  Theme is 1950-1960's retro, washed colors and heavy on pastels.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p class="italic text-sm">
+                        <b>All artwork is CC-BY-NC-SA-4.0</b> - use all you like, tattoo it on your butt if you want.
+                        But for-profit use is forbidden.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
-
-
-    <div class="bg-white">
-        <header class="absolute inset-x-0 top-0 z-50">
-            <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-                <div class="flex lg:flex-1">
-                </div>
-                <div class="flex lg:hidden">
-                </div>
-                <div class="hidden lg:flex lg:gap-x-12">
-                    <a href="/create" class="text-sm/6 font-semibold text-gray-900">Create</a>
-                    <a href="/participate" class="text-sm/6 font-semibold text-gray-900">Participate</a>
-                    <a href="/donate" class="text-sm/6 font-semibold text-gray-900">Donate</a>
-                    <a href="https://thatcatcamp.com" class="text-sm/6 font-semibold text-gray-900">CAT Camp</a>
-                </div>
-            </nav>
-            <!-- Mobile menu, show/hide based on menu open state. -->
-            <div class="lg:hidden" role="dialog" aria-modal="true">
-                <!-- Background backdrop, show/hide based on slide-over state. -->
-                <div class="fixed inset-0 z-50"></div>
-                <div
-                    class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-                    <div class="flex items-center justify-between">
-                        <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
-                            <span class="sr-only">Close menu</span>
-                            <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                 aria-hidden="true" data-slot="icon">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="mt-6 flow-root">
-                    </div>
-                </div>
-            </div>
-        </header>
-
-
-    </div>
-
-
 </main>
 
 <style>
-
+    /* Base Styles */
+    * {
+        box-sizing: border-box;
+    }
 
     nav {
-        background-color: #f0f0f0; /* Example background color */
+        background-color: #f0f0f0;
         padding: 10px;
-        /* Other toolbar styles (e.g., border, shadow, etc.) */
+        width: 100%;
     }
 
     nav ul {
-        list-style: none; /* Remove bullet points */
+        list-style: none;
         margin: 0;
         padding: 0;
-        display: flex; /* Arrange list items horizontally */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
+    @media (min-width: 768px) {
+        nav ul {
+            flex-direction: row;
+            justify-content: center;
+        }
     }
 
     nav li {
-        margin-right: 20px; /* Spacing between list items */
+        margin: 10px 15px;
     }
 
-    nav li.active a { /* Style for the currently active link */
+    nav li.active a {
         font-weight: bold;
-        text-decoration: underline; /* or any other distinctive style */
-
+        text-decoration: underline;
     }
 
     nav a {
-        text-decoration: none; /* Remove underlines from links */
-        color: #333; /* Example link color */
+        text-decoration: none;
+        color: #333;
     }
 
-    nav a:hover { /* Style on hover */
+    nav a:hover {
         color: #6366f1;
     }
 
-
-    * {
-        box-sizing: border-box
+    .image-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px; /* Increased width */
+        overflow: visible; /* Allow image to overflow if needed */
     }
 
-
-    .active{
-        background-color: #717171;
-    }
-
-
-    @keyframes fade {
-        from {
-            opacity: .4
-        }
-        to {
-            opacity: 1
-        }
-    }
-
-    img, button {
-        position: absolute;
-        background: #6366f1;
-        max-height: 100%;
-    }
-
-    .hero-section {
-        background-size: cover;
-        background-position: center;
+    .image-container img {
+        position: relative; /* Changed from absolute */
+        width: 100%;
+        height: auto; /* Auto height to maintain aspect ratio */
+        object-fit: contain; /* Ensures entire image is visible */
+        display: block; /* Remove any potential inline spacing */
     }
 
     .animated-image {
         transition: opacity 0.5s ease-in-out;
     }
 
-    main {
-        padding-top: 56px;
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .hero-section {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
     }
 
     .image-container {
         position: relative;
-        width: 50%;
-        padding-top: 75%; /* This sets the height to 25% of the width */
+        width: 100%;
+        max-width: 400px;
+        height: 300px;
         overflow: hidden;
     }
 
@@ -278,15 +274,6 @@
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
-    }
-
-    .fade-in {
-        opacity: 1;
-    }
-
-    .hero-text > div { /* target direct children only - not nested elements in Slidy */
-        opacity: 1; /* Start with elements hidden */
-        transition: opacity 0.5s ease-in-out; /* Smooth transition */
+        object-fit: contain;
     }
 </style>

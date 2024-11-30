@@ -1,0 +1,64 @@
+name: Playa Tarot CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - uses: actions/checkout@v4
+
+    # Setup Node.js
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+        cache: 'npm'
+
+    # Install dependencies
+    - name: Install dependencies
+      run: npm ci
+
+
+    # Build the project
+    - name: Build
+      run: npm run build
+
+    # Upload build artifacts
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: playa-tarot-build
+        path: dist
+        retention-days: 5
+
+  # Optional deployment job
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Only deploy on main branch
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download build artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: playa-tarot-build
+        path: dist
+
+    # Example deployment to GitHub Pages
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        # Optional: specify a custom domain
+        # cname: playatarot.org
